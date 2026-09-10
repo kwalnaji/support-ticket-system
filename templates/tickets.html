@@ -3,95 +3,139 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tickets | INTELLICONZ Support Hub</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>
+        INTELLICONZ Support Hub
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
+
 
 <body class="tickets-page">
 
-    <div class="tickets-container">
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-        <!-- HEADER -->
+    <header class="tickets-header">
 
-        <header class="tickets-header">
+        <div class="tickets-header-left">
 
-            <a href="/" class="tickets-brand">
-
-                <img
-                    src="{{ url_for('static', filename='intelliconz-logo.png') }}"
-                    alt="Intelliconz"
-                    class="tickets-logo"
-                >
-
-                <div>
-                    <h1>INTELLICONZ Support Hub</h1>
-                    <p>Internal Support Ticket System</p>
-                </div>
-
-            </a>
-
-            <div class="tickets-header-actions">
-
-                <a href="/" class="tickets-dashboard-button">
-                    ← Dashboard
-                </a>
-
-                <a href="/logout" class="tickets-logout-button">
-                    Logout
-                </a>
-
-            </div>
-
-        </header>
-
-
-        <!-- PAGE TITLE -->
-
-        <section class="tickets-title-section">
+            <img
+                src="{{ url_for('static', filename='intelliconz-logo.png') }}"
+                alt="INTELLICONZ"
+                class="tickets-logo"
+            >
 
             <div>
-
-                <h2>
-                    {% if session["role"] == "Employee" %}
-                        My Tickets
-                    {% else %}
-                        Support Tickets
-                    {% endif %}
-                </h2>
+                <h1>
+                    INTELLICONZ Support Hub
+                </h1>
 
                 <p>
-                    {% if session["role"] == "Employee" %}
-                        Track and manage your support requests.
-                    {% else %}
-                        Review and manage Intelliconz support requests.
-                    {% endif %}
+                    Internal Support Ticket System
                 </p>
-
             </div>
 
-            <div class="tickets-user-info">
+        </div>
+
+
+        <div class="tickets-header-actions">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="secondary-btn"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="secondary-btn"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="tickets-container">
+
+
+        <!-- =================================================
+             PAGE TITLE
+        ================================================== -->
+
+        <section class="tickets-page-heading">
+
+            {% if session["role"] == "Employee" %}
+
+                <div>
+
+                    <h2>
+                        My Tickets
+                    </h2>
+
+                    <p>
+                        Track and manage your support requests.
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <div>
+
+                    <h2>
+                        Support Tickets
+                    </h2>
+
+                    <p>
+                        Review and manage INTELLICONZ support requests.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="current-user-info">
 
                 <span>
                     {{ session["username"] }}
                 </span>
 
-                <strong>
+                <span class="role-badge">
                     {{ session["role"] }}
-                </strong>
+                </span>
 
             </div>
 
         </section>
 
 
-        <!-- SUMMARY -->
+        <!-- =================================================
+             SUMMARY
+        ================================================== -->
 
-        <section class="ticket-summary-grid">
+        <section class="ticket-summary">
 
-            <div class="ticket-summary-card">
+            <div class="summary-card">
 
                 <span class="summary-label">
                     Total
@@ -104,7 +148,7 @@
             </div>
 
 
-            <div class="ticket-summary-card">
+            <div class="summary-card">
 
                 <span class="summary-label">
                     Open
@@ -117,7 +161,7 @@
             </div>
 
 
-            <div class="ticket-summary-card">
+            <div class="summary-card">
 
                 <span class="summary-label">
                     In Progress
@@ -130,7 +174,7 @@
             </div>
 
 
-            <div class="ticket-summary-card">
+            <div class="summary-card">
 
                 <span class="summary-label">
                     Resolved
@@ -143,7 +187,7 @@
             </div>
 
 
-            <div class="ticket-summary-card">
+            <div class="summary-card">
 
                 <span class="summary-label">
                     Closed
@@ -158,52 +202,49 @@
         </section>
 
 
-        <!-- SEARCH / FILTER -->
+        <!-- =================================================
+             SEARCH AND FILTER
+        ================================================== -->
 
-        <section class="ticket-filter-card">
+        <section class="filter-card">
 
-            <div class="ticket-section-heading">
+            <div class="filter-title">
 
-                <div>
+                <h3>
+                    Search & Filter
+                </h3>
 
-                    <h2>
-                        Search & Filter
-                    </h2>
-
-                    <p>
-                        Find tickets by title, description, status,
-                        category, or priority.
-                    </p>
-
-                </div>
+                <p>
+                    Search tickets and combine filters.
+                </p>
 
             </div>
 
 
             <form
                 method="GET"
-                action="/tickets"
-                class="ticket-filter-form"
+                action="{{ url_for('tickets') }}"
+                class="filter-form"
             >
 
-                <div class="ticket-search-field">
+                <div class="filter-group">
 
                     <label for="search">
                         Search
                     </label>
 
                     <input
-                        id="search"
                         type="text"
+                        id="search"
                         name="search"
-                        placeholder="Search title or description..."
+                        placeholder="Search title or description"
                         value="{{ search }}"
                     >
 
                 </div>
 
 
-                <div class="ticket-filter-field">
+                <div class="filter-group">
 
                     <label for="status">
                         Status
@@ -220,28 +261,36 @@
 
                         <option
                             value="Open"
-                            {% if status_filter == "Open" %}selected{% endif %}
+                            {% if status_filter == "Open" %}
+                                selected
+                            {% endif %}
                         >
                             Open
                         </option>
 
                         <option
                             value="In Progress"
-                            {% if status_filter == "In Progress" %}selected{% endif %}
+                            {% if status_filter == "In Progress" %}
+                                selected
+                            {% endif %}
                         >
                             In Progress
                         </option>
 
                         <option
                             value="Resolved"
-                            {% if status_filter == "Resolved" %}selected{% endif %}
+                            {% if status_filter == "Resolved" %}
+                                selected
+                            {% endif %}
                         >
                             Resolved
                         </option>
 
                         <option
                             value="Closed"
-                            {% if status_filter == "Closed" %}selected{% endif %}
+                            {% if status_filter == "Closed" %}
+                                selected
+                            {% endif %}
                         >
                             Closed
                         </option>
@@ -251,7 +300,7 @@
                 </div>
 
 
-                <div class="ticket-filter-field">
+                <div class="filter-group">
 
                     <label for="category">
                         Category
@@ -268,21 +317,27 @@
 
                         <option
                             value="Technical Issue"
-                            {% if category_filter == "Technical Issue" %}selected{% endif %}
+                            {% if category_filter == "Technical Issue" %}
+                                selected
+                            {% endif %}
                         >
                             Technical Issue
                         </option>
 
                         <option
                             value="Access Request"
-                            {% if category_filter == "Access Request" %}selected{% endif %}
+                            {% if category_filter == "Access Request" %}
+                                selected
+                            {% endif %}
                         >
                             Access Request
                         </option>
 
                         <option
                             value="Other"
-                            {% if category_filter == "Other" %}selected{% endif %}
+                            {% if category_filter == "Other" %}
+                                selected
+                            {% endif %}
                         >
                             Other
                         </option>
@@ -292,7 +347,7 @@
                 </div>
 
 
-                <div class="ticket-filter-field">
+                <div class="filter-group">
 
                     <label for="priority">
                         Priority
@@ -309,21 +364,27 @@
 
                         <option
                             value="Low"
-                            {% if priority_filter == "Low" %}selected{% endif %}
+                            {% if priority_filter == "Low" %}
+                                selected
+                            {% endif %}
                         >
                             Low
                         </option>
 
                         <option
                             value="Medium"
-                            {% if priority_filter == "Medium" %}selected{% endif %}
+                            {% if priority_filter == "Medium" %}
+                                selected
+                            {% endif %}
                         >
                             Medium
                         </option>
 
                         <option
                             value="High"
-                            {% if priority_filter == "High" %}selected{% endif %}
+                            {% if priority_filter == "High" %}
+                                selected
+                            {% endif %}
                         >
                             High
                         </option>
@@ -333,18 +394,60 @@
                 </div>
 
 
-                <div class="ticket-filter-buttons">
+                <div class="filter-group">
+
+                    <label for="assignee">
+                        Assigned Support
+                    </label>
+
+                    <select
+                        id="assignee"
+                        name="assignee"
+                    >
+
+                        <option value="">
+                            All Assignees
+                        </option>
+
+                        <option
+                            value="Unassigned"
+                            {% if assignee_filter == "Unassigned" %}
+                                selected
+                            {% endif %}
+                        >
+                            Unassigned
+                        </option>
+
+                        {% for support_user in support_users %}
+
+                            <option
+                                value="{{ support_user['username'] }}"
+                                {% if assignee_filter == support_user['username'] %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ support_user["username"] }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-buttons">
 
                     <button
                         type="submit"
-                        class="apply-filter-button"
+                        class="primary-btn"
                     >
-                        Apply
+                        Apply Filters
                     </button>
 
                     <a
-                        href="/tickets"
-                        class="clear-filter-button"
+                        href="{{ url_for('tickets') }}"
+                        class="secondary-btn"
                     >
                         Clear
                     </a>
@@ -356,253 +459,381 @@
         </section>
 
 
-        <!-- TICKET LIST -->
+        <!-- =================================================
+             TICKET LIST
+        ================================================== -->
 
-        <section class="tickets-list-section">
-
-            <div class="ticket-section-heading">
-
-                <div>
-
-                    <h2>
-                        Ticket List
-                    </h2>
-
-                    <p>
-                        Support request details and activity.
-                    </p>
-
-                </div>
-
-            </div>
+        <section class="ticket-list">
 
 
             {% if tickets %}
 
-                <div class="tickets-list">
 
-                    {% for ticket in tickets %}
+                {% for ticket in tickets %}
 
-                        <article class="full-ticket-card">
-
-
-                            <!-- TICKET TOP -->
-
-                            <div class="full-ticket-header">
-
-                                <div class="ticket-heading-left">
-
-                                    <span class="full-ticket-id">
-                                        #{{ ticket["id"] }}
-                                    </span>
-
-                                    <div>
-
-                                        <h3>
-                                            {{ ticket["title"] }}
-                                        </h3>
-
-                                        <p>
-                                            {{ ticket["category"] }}
-                                            •
-                                            {{ ticket["priority"] }} Priority
-                                        </p>
-
-                                    </div>
-
-                                </div>
+                    <article class="ticket-card">
 
 
-                                <span class="
-                                    ticket-status
-                                    {% if ticket['status'] == 'Open' %}
-                                        status-open
-                                    {% elif ticket['status'] == 'In Progress' %}
-                                        status-assigned
-                                    {% elif ticket['status'] == 'Resolved' %}
-                                        status-resolved
-                                    {% elif ticket['status'] == 'Closed' %}
-                                        status-closed
-                                    {% else %}
-                                        status-default
-                                    {% endif %}
-                                ">
+                        <!-- =================================
+                             TICKET HEADER
+                        ================================== -->
 
-                                    {{ ticket["status"] }}
+                        <div class="ticket-card-header">
 
+                            <div>
+
+                                <span class="ticket-number">
+                                    #{{ ticket["id"] }}
                                 </span>
 
-                            </div>
+                                <h3>
+                                    {{ ticket["title"] }}
+                                </h3>
 
-
-                            <!-- DESCRIPTION -->
-
-                            <div class="ticket-description">
-
-                                <span class="ticket-detail-label">
-                                    Description
-                                </span>
-
-                                <p>
-                                    {{ ticket["description"] }}
+                                <p class="ticket-meta">
+                                    {{ ticket["category"] }}
+                                    •
+                                    {{ ticket["priority"] }} Priority
                                 </p>
 
                             </div>
 
 
-                            <!-- DETAILS -->
+                            {% if ticket["status"] == "Open" %}
 
-                            <div class="ticket-details-grid">
+                                <span class="status-badge status-open">
+                                    Open
+                                </span>
 
-                                <div class="ticket-detail-item">
+                            {% elif ticket["status"] == "In Progress" %}
 
-                                    <span>
-                                        Created By
-                                    </span>
+                                <span class="status-badge status-assigned">
+                                    In Progress
+                                </span>
 
-                                    <strong>
+                            {% elif ticket["status"] == "Resolved" %}
 
-                                        {% if ticket["creator_username"] %}
-                                            {{ ticket["creator_username"] }}
-                                        {% else %}
-                                            Unknown
-                                        {% endif %}
+                                <span class="status-badge status-resolved">
+                                    Resolved
+                                </span>
 
-                                    </strong>
+                            {% elif ticket["status"] == "Closed" %}
 
-                                </div>
+                                <span class="status-badge status-closed">
+                                    Closed
+                                </span>
 
+                            {% endif %}
 
-                                <div class="ticket-detail-item">
-
-                                    <span>
-                                        Assigned Support
-                                    </span>
-
-                                    <strong>
-
-                                        {% if ticket["assigned_username"] %}
-                                            {{ ticket["assigned_username"] }}
-                                        {% else %}
-                                            Unassigned
-                                        {% endif %}
-
-                                    </strong>
-
-                                </div>
+                        </div>
 
 
-                                <div class="ticket-detail-item">
+                        <!-- =================================
+                             DESCRIPTION
+                        ================================== -->
 
-                                    <span>
-                                        Created
-                                    </span>
+                        <div class="ticket-description">
 
-                                    <strong>
-                                        {{ ticket["created_at"] }}
-                                    </strong>
+                            <h4>
+                                Description
+                            </h4>
 
-                                </div>
+                            <p>
+                                {{ ticket["description"] }}
+                            </p>
+
+                        </div>
 
 
-                                <div class="ticket-detail-item">
+                        <!-- =================================
+                             DETAILS
+                        ================================== -->
 
-                                    <span>
-                                        Updated
-                                    </span>
+                        <div class="ticket-details-grid">
 
-                                    <strong>
+                            <div class="ticket-detail">
 
-                                        {% if ticket["updated_at"] %}
-                                            {{ ticket["updated_at"] }}
-                                        {% else %}
-                                            Not available
-                                        {% endif %}
+                                <span>
+                                    Created By
+                                </span>
 
-                                    </strong>
-
-                                </div>
+                                <strong>
+                                    {{ ticket["creator_username"] }}
+                                </strong>
 
                             </div>
 
 
-                            <!-- RESOLUTION NOTE -->
+                            <div class="ticket-detail">
 
-                            {% if ticket["resolution_note"] %}
+                                <span>
+                                    Assigned Support
+                                </span>
 
-                                <div class="ticket-note resolution-ticket-note">
+                                <strong>
 
-                                    <strong>
-                                        Resolution Note
-                                    </strong>
+                                    {% if ticket["assigned_username"] %}
 
-                                    <p>
-                                        {{ ticket["resolution_note"] }}
-                                    </p>
+                                        {{ ticket["assigned_username"] }}
+
+                                    {% else %}
+
+                                        Unassigned
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+
+                            <div class="ticket-detail">
+
+                                <span>
+                                    Created
+                                </span>
+
+                                <strong>
+                                    {{ ticket["created_at"] }}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="ticket-detail">
+
+                                <span>
+                                    Updated
+                                </span>
+
+                                <strong>
+                                    {{ ticket["updated_at"] }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             RESOLUTION / REOPEN NOTES
+                        ================================== -->
+
+                        {% if ticket["resolution_note"] %}
+
+                            <div class="ticket-note">
+
+                                <h4>
+                                    Resolution Note
+                                </h4>
+
+                                <p>
+                                    {{ ticket["resolution_note"] }}
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if ticket["reopen_reason"] %}
+
+                            <div class="ticket-note">
+
+                                <h4>
+                                    Reopen Reason
+                                </h4>
+
+                                <p>
+                                    {{ ticket["reopen_reason"] }}
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- =================================
+                             COMMENTS
+                        ================================== -->
+
+                        <div class="ticket-comments">
+
+                            <h4>
+                                Comments
+                            </h4>
+
+
+                            {% if comments_by_ticket.get(ticket["id"]) %}
+
+                                <div class="comments-list">
+
+                                    {% for comment in comments_by_ticket[ticket["id"]] %}
+
+                                        <div class="comment-item">
+
+                                            <div class="comment-header">
+
+                                                <strong>
+                                                    {{ comment["username"] }}
+                                                </strong>
+
+                                                <span>
+                                                    {{ comment["role"] }}
+                                                    •
+                                                    {{ comment["created_at"] }}
+                                                </span>
+
+                                            </div>
+
+                                            <p>
+                                                {{ comment["comment"] }}
+                                            </p>
+
+                                        </div>
+
+                                    {% endfor %}
 
                                 </div>
+
+                            {% else %}
+
+                                <p class="empty-comments">
+                                    No comments yet.
+                                </p>
 
                             {% endif %}
 
 
-                            <!-- REOPEN REASON -->
+                            {% if ticket["status"] != "Closed" %}
 
-                            {% if ticket["reopen_reason"] %}
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('add_comment', ticket_id=ticket['id']) }}"
+                                    class="comment-form"
+                                >
 
-                                <div class="ticket-note reopen-ticket-note">
+                                    <textarea
+                                        name="comment"
+                                        placeholder="Write a comment..."
+                                        required
+                                    ></textarea>
 
-                                    <strong>
-                                        Reopen Reason
-                                    </strong>
+                                    <button
+                                        type="submit"
+                                        class="primary-btn"
+                                    >
+                                        Add Comment
+                                    </button>
 
-                                    <p>
-                                        {{ ticket["reopen_reason"] }}
-                                    </p>
-
-                                </div>
+                                </form>
 
                             {% endif %}
 
+                        </div>
 
-                            <!-- SUPPORT ASSIGN -->
 
-                            {% if session["role"] == "Support"
-                                  and ticket["assigned_to"] == None
-                                  and ticket["status"] != "Closed" %}
+                        <!-- =================================
+                             SUPPORT ACTIONS
+                        ================================== -->
 
-                                <div class="ticket-action-area">
+                        {% if session["role"] == "Support"
+                              and ticket["status"] != "Closed" %}
+
+                            <div class="ticket-actions">
+
+                                <h4>
+                                    Support Actions
+                                </h4>
+
+
+                                <!-- ASSIGN / REASSIGN -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('assign_ticket', ticket_id=ticket['id']) }}"
+                                    class="action-form"
+                                >
+
+                                    <label>
+                                        Assign Support User
+                                    </label>
+
+                                    <select
+                                        name="support_user_id"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Select Support User
+                                        </option>
+
+                                        {% for support_user in support_users %}
+
+                                            <option
+                                                value="{{ support_user['id'] }}"
+                                                {% if ticket["assigned_to"] == support_user["id"] %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                {{ support_user["username"] }}
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                    <button
+                                        type="submit"
+                                        class="primary-btn"
+                                    >
+
+                                        {% if ticket["assigned_to"] %}
+
+                                            Reassign Ticket
+
+                                        {% else %}
+
+                                            Assign Ticket
+
+                                        {% endif %}
+
+                                    </button>
+
+                                </form>
+
+
+                                <!-- START WORK -->
+
+                                {% if ticket["status"] == "Open"
+                                      and ticket["assigned_to"] %}
 
                                     <form
                                         method="POST"
-                                        action="/assign/{{ ticket['id'] }}"
+                                        action="{{ url_for('start_ticket', ticket_id=ticket['id']) }}"
+                                        class="action-form"
                                     >
 
                                         <button
                                             type="submit"
-                                            class="assign-ticket-button"
+                                            class="primary-btn"
                                         >
-                                            Assign to Me
+                                            Start Work
                                         </button>
 
                                     </form>
 
-                                </div>
-
-                            {% endif %}
+                                {% endif %}
 
 
-                            <!-- SUPPORT RESOLVE -->
+                                <!-- RESOLVE -->
 
-                            {% if session["role"] == "Support"
-                                  and ticket["assigned_to"] == session["user_id"]
-                                  and ticket["status"] == "In Progress" %}
-
-                                <div class="ticket-action-area">
+                                {% if ticket["status"] == "In Progress" %}
 
                                     <form
                                         method="POST"
-                                        action="/resolve/{{ ticket['id'] }}"
-                                        class="ticket-action-form"
+                                        action="{{ url_for('resolve_ticket', ticket_id=ticket['id']) }}"
+                                        class="action-form"
                                     >
 
                                         <label>
@@ -611,207 +842,212 @@
 
                                         <textarea
                                             name="resolution_note"
-                                            placeholder="Describe how the issue was resolved..."
+                                            placeholder="Explain how the issue was resolved..."
                                             required
                                         ></textarea>
 
                                         <button
                                             type="submit"
-                                            class="resolve-ticket-button"
+                                            class="primary-btn"
                                         >
                                             Resolve Ticket
                                         </button>
 
                                     </form>
 
-                                </div>
-
-                            {% endif %}
-
-
-                            <!-- SUPPORT CLOSE -->
-
-                            {% if session["role"] == "Support"
-                                  and ticket["assigned_to"] == session["user_id"]
-                                  and ticket["status"] == "Resolved" %}
-
-                                <div class="ticket-action-area">
-
-                                    <form
-                                        method="POST"
-                                        action="/close/{{ ticket['id'] }}"
-                                    >
-
-                                        <button
-                                            type="submit"
-                                            class="close-ticket-button"
-                                        >
-                                            Close Ticket
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
-                            {% endif %}
-
-
-                            <!-- EMPLOYEE REOPEN -->
-
-                            {% if session["role"] == "Employee"
-                                  and ticket["creator_id"] == session["user_id"]
-                                  and ticket["status"] == "Resolved" %}
-
-                                <div class="ticket-action-area">
-
-                                    <form
-                                        method="POST"
-                                        action="/reopen/{{ ticket['id'] }}"
-                                        class="ticket-action-form"
-                                    >
-
-                                        <label>
-                                            Reopen Reason
-                                        </label>
-
-                                        <textarea
-                                            name="reopen_reason"
-                                            placeholder="Explain why the ticket needs to be reopened..."
-                                            required
-                                        ></textarea>
-
-                                        <button
-                                            type="submit"
-                                            class="reopen-ticket-button"
-                                        >
-                                            Reopen Ticket
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
-                            {% endif %}
-
-
-                            <!-- HISTORY -->
-
-                            <div class="ticket-history-section">
-
-                                <h4>
-                                    Ticket History
-                                </h4>
-
-
-                                {% if ticket["id"] in history_by_ticket %}
-
-                                    <div class="ticket-timeline">
-
-                                        {% for history in history_by_ticket[ticket["id"]] %}
-
-                                            <div class="timeline-item">
-
-                                                <div class="timeline-marker"></div>
-
-                                                <div class="timeline-content">
-
-                                                    <div class="timeline-heading">
-
-                                                        <strong>
-                                                            {{ history["action"] }}
-                                                        </strong>
-
-                                                        <span>
-
-                                                            {% if history["actor_username"] %}
-                                                                {{ history["actor_username"] }}
-                                                            {% else %}
-                                                                System
-                                                            {% endif %}
-
-                                                            •
-
-                                                            {{ history["created_at"] }}
-
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    {% if history["details"] %}
-
-                                                        <p>
-                                                            {{ history["details"] }}
-                                                        </p>
-
-                                                    {% endif %}
-
-                                                </div>
-
-                                            </div>
-
-                                        {% endfor %}
-
-                                    </div>
-
-                                {% else %}
-
-                                    <p class="no-history">
-                                        No history recorded yet.
-                                    </p>
-
                                 {% endif %}
 
                             </div>
 
-                        </article>
+                        {% endif %}
 
-                    {% endfor %}
 
-                </div>
+                        <!-- =================================
+                             EMPLOYEE ACTIONS
+                        ================================== -->
+
+                        {% if session["role"] == "Employee"
+                              and ticket["creator_id"] == session["user_id"]
+                              and ticket["status"] == "Resolved" %}
+
+                            <div class="ticket-actions">
+
+                                <h4>
+                                    Employee Actions
+                                </h4>
+
+
+                                <!-- REOPEN -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('reopen_ticket', ticket_id=ticket['id']) }}"
+                                    class="action-form"
+                                >
+
+                                    <label>
+                                        Reopen Reason
+                                    </label>
+
+                                    <textarea
+                                        name="reopen_reason"
+                                        placeholder="Explain why the issue is still happening..."
+                                        required
+                                    ></textarea>
+
+                                    <button
+                                        type="submit"
+                                        class="primary-btn"
+                                    >
+                                        Reopen Ticket
+                                    </button>
+
+                                </form>
+
+
+                                <!-- CLOSE -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('close_ticket', ticket_id=ticket['id']) }}"
+                                    class="action-form"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="secondary-btn"
+                                    >
+                                        Close Ticket
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- =================================
+                             HISTORY
+                        ================================== -->
+
+                        <div class="ticket-history">
+
+                            <h4>
+                                Ticket History
+                            </h4>
+
+
+                            {% if history_by_ticket.get(ticket["id"]) %}
+
+                                <div class="history-timeline">
+
+                                    {% for history in history_by_ticket[ticket["id"]] %}
+
+                                        <div class="history-item">
+
+                                            <div class="history-marker"></div>
+
+                                            <div class="history-content">
+
+                                                <strong>
+                                                    {{ history["action"] }}
+                                                </strong>
+
+                                                <span class="history-meta">
+
+                                                    {% if history["actor_username"] %}
+
+                                                        {{ history["actor_username"] }}
+
+                                                    {% else %}
+
+                                                        System
+
+                                                    {% endif %}
+
+                                                    •
+
+                                                    {{ history["created_at"] }}
+
+                                                </span>
+
+                                                {% if history["details"] %}
+
+                                                    <p>
+                                                        {{ history["details"] }}
+                                                    </p>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% else %}
+
+                                <p>
+                                    No ticket history available.
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+
+                    </article>
+
+                {% endfor %}
+
 
             {% else %}
 
-                <div class="no-tickets-card">
+                <div class="no-tickets">
 
                     <h3>
                         No tickets found
                     </h3>
 
                     <p>
-                        No tickets match the current search or filters.
+                        No tickets match your current search or filters.
                     </p>
 
-                    <a href="/tickets">
-                        Clear Filters
-                    </a>
+                    {% if session["role"] == "Employee" %}
+
+                        <a
+                            href="{{ url_for('create_ticket') }}"
+                            class="primary-btn"
+                        >
+                            Create Ticket
+                        </a>
+
+                    {% endif %}
 
                 </div>
 
             {% endif %}
 
+
         </section>
 
+    </main>
 
-        <!-- FOOTER -->
 
-        <footer class="tickets-footer">
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
-            <div>
+    <footer class="tickets-footer">
 
-                <strong>
-                    //
-                </strong>
+        <span>
+            // Setting Passion In Motion
+        </span>
 
-                <span>
-                    Setting Passion In Motion
-                </span>
-
-            </div>
-
-        </footer>
-
-    </div>
+    </footer>
 
 </body>
 

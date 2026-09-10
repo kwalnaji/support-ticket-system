@@ -2,16 +2,19 @@
 
 INTELLICONZ Support Hub is an internal support ticket management system developed as an internship assessment project.
 
-The system allows employees to create and track support tickets while support staff can assign, resolve, and close tickets.
+The system allows employees to create and track support tickets while support staff can assign, manage, comment on, and resolve tickets.
 
 ## Technologies Used
 
 - Python
 - Flask
 - SQLite
+- SQL
 - HTML
 - CSS
 - JavaScript
+- Git
+- GitHub
 
 ## Main Features
 
@@ -19,22 +22,28 @@ The system allows employees to create and track support tickets while support st
 
 - Login with an Employee account
 - Create support tickets
-- View their own tickets
+- View only their own tickets
 - Search and filter tickets
+- View ticket comments
+- Add comments to their own non-Closed tickets
 - View ticket history
-- Reopen resolved tickets with a reason
+- Reopen their own Resolved tickets with a required reason
+- Close their own Resolved tickets
 - View dashboard ticket statistics
 
 ### Support
 
 - Login with a Support account
-- View support tickets
+- View all support tickets
 - Search and filter tickets
-- Assign tickets
-- Resolve tickets with a resolution note
-- Close resolved tickets
+- Assign tickets to any Support user
+- Reassign non-Closed tickets to another Support user
+- Start work on assigned Open tickets
+- Resolve In Progress tickets with a required resolution note
+- Add comments to any non-Closed ticket
 - View complete ticket history
 - View dashboard ticket statistics
+- Perform allowed Support actions even if another Support user is assigned to the ticket
 
 ## Ticket Workflow
 
@@ -42,19 +51,33 @@ Tickets follow this workflow:
 
 ```text
 Open → In Progress → Resolved → Closed
+                         ↓
+                    Reopen
+                         ↓
+                    In Progress
 ```
 
 When a ticket is created, it starts as **Open** and **Unassigned**.
 
-When Support assigns the ticket, it changes to **In Progress**.
+Support can assign the ticket to any Support user. Assigning the ticket does **not** automatically change its status.
 
-Support can resolve an In Progress ticket by providing a resolution note.
+After the ticket has been assigned, Support can use **Start Work** to change the ticket from **Open** to **In Progress**.
 
-An Employee can reopen their resolved ticket if the problem continues. The ticket returns to **Open** and becomes **Unassigned**.
+Support can reassign any non-Closed ticket to another Support user.
 
-Support can close a resolved ticket.
+Any Support user can perform allowed Support actions. The action is not restricted only to the currently assigned Support user.
 
-Closed tickets are read-only.
+Support can resolve an **In Progress** ticket by providing a required resolution note.
+
+An Employee can reopen their own **Resolved** ticket if the problem continues. A reopen reason is required.
+
+When reopened, the ticket returns to **In Progress** and keeps its assigned Support user.
+
+The previous resolution information remains available in the ticket history.
+
+Only the Employee who created the ticket can close their own **Resolved** ticket.
+
+Closed tickets are read-only and cannot receive new comments or workflow changes.
 
 ## Test Accounts
 
@@ -88,12 +111,14 @@ Password: pass123
 
 Open the `support-ticket-system` folder in VS Code.
 
-### 2. Install Flask
+### 2. Install Dependencies
 
-If Flask is not already installed, run:
+The project includes a `requirements.txt` file.
+
+Run:
 
 ```powershell
-& "C:\Users\alnaj\AppData\Local\Programs\Python\Python313\python.exe" -m pip install flask
+& "C:\Users\alnaj\AppData\Local\Programs\Python\Python313\python.exe" -m pip install -r requirements.txt
 ```
 
 ### 3. Start the Server
@@ -126,41 +151,104 @@ It stores:
 
 - Users
 - Tickets
+- Ticket assignments
+- Comments
+- Resolution notes
+- Reopen reasons
 - Ticket history
 
 The information remains stored after the application is restarted.
+
+The application creates the required database tables and test accounts when needed.
+
+## Search and Filters
+
+Tickets can be searched and filtered using:
+
+- Search
+- Status
+- Category
+- Priority
+- Assigned Support
+- Unassigned
+
+Search and multiple filters can be used together.
+
+The ticket page also displays summary counts for:
+
+- Total
+- Open
+- In Progress
+- Resolved
+- Closed
+
+## Comments
+
+Employees can add comments to their own non-Closed tickets.
+
+Support users can add comments to any non-Closed ticket.
+
+Comments are displayed from oldest to newest.
+
+Closed tickets cannot receive new comments.
 
 ## API
 
 The project includes the following API endpoints:
 
 ```text
+POST /api/login
+
 GET  /api/tickets
-GET  /api/tickets/<ticket_id>
 POST /api/tickets
+GET  /api/tickets/<ticket_id>
+
 POST /api/tickets/<ticket_id>/assign
+POST /api/tickets/<ticket_id>/start
 POST /api/tickets/<ticket_id>/resolve
 POST /api/tickets/<ticket_id>/reopen
 POST /api/tickets/<ticket_id>/close
+
+GET  /api/tickets/<ticket_id>/comments
+POST /api/tickets/<ticket_id>/comments
+
+GET  /api/tickets/<ticket_id>/history
+GET  /api/summary
 ```
 
-The API follows the same authentication, role permissions, and ticket workflow rules as the website.
+The API follows the same authentication, role permissions, visibility rules, validation, and ticket workflow rules as the website.
 
 ## Authorization and Validation
 
 The application uses two roles: **Employee** and **Support**.
 
-Employees can create tickets, view their own tickets, and reopen their own resolved tickets.
+Employees can create tickets and view only their own tickets.
 
-Support users can view support tickets and assign, resolve, and close tickets according to the ticket's current status.
+An Employee cannot access another Employee's ticket through the website or API.
 
-The application validates required information such as ticket titles and descriptions.
+Employees cannot perform Support-only actions such as assigning or starting tickets.
+
+Support users can view all tickets.
+
+Only Support users can be selected as ticket assignees.
+
+Employees cannot be assigned as Support users.
+
+An Open ticket must have an assigned Support user before it can move to **In Progress**.
+
+A resolution note is required before an In Progress ticket can become **Resolved**.
+
+Only the Employee who created a Resolved ticket can reopen or close it.
+
+A reopen reason is required.
+
+Closed tickets cannot be modified or receive new comments.
+
+The application also validates required information such as ticket titles and descriptions.
 
 Whitespace-only titles and descriptions are rejected.
 
-Invalid ticket status changes are rejected.
-
-Closed tickets cannot be modified.
+Invalid ticket status changes are rejected by the backend.
 
 ## Ticket History
 
@@ -168,19 +256,64 @@ The system automatically records important ticket actions:
 
 - Created
 - Assigned
+- Reassigned
+- Started
 - Resolved
 - Reopened
 - Closed
 
-History records include the action, user, timestamp, and relevant information such as resolution notes and reopen reasons.
+History records include the action, user, timestamp, and relevant information such as assignment changes, status changes, resolution notes, and reopen reasons.
+
+Ticket history is displayed from oldest to newest.
+
+Resolution information remains in the history even if the ticket is later reopened and resolved again.
 
 This allows the progress of each ticket to be tracked from creation to completion.
+
+## Testing
+
+The system was manually tested throughout development.
+
+Tests included:
+
+- Employee login
+- Support login
+- Ticket creation
+- New tickets starting as Open and Unassigned
+- Assigning a ticket to a Support user
+- Assignment without automatically changing the ticket status
+- Reassigning a ticket
+- Starting work on an assigned ticket
+- Open to In Progress workflow
+- Resolving a ticket
+- Resolution notes
+- Support actions when another Support user is assigned
+- Employee reopening a Resolved ticket
+- Reopen reasons
+- Retaining the assigned Support user after reopening
+- Retaining previous resolution information
+- Resolving a reopened ticket again
+- Employee closing their Resolved ticket
+- Employee comments
+- Support comments
+- Comments displayed in chronological order
+- Closed ticket read-only behavior
+- Employee ticket visibility
+- Cross-Employee API access denial
+- Unauthorized Employee state changes through the API
+- Combined search and filters
+- Assignee filtering
+- Summary counts
+- API login
+- API summary results
 
 ## Challenges and Learning
 
 One of the main challenges was building the ticket workflow while making sure Employees and Support users could only perform actions allowed for their roles.
 
-Another challenge was keeping ticket statuses, assignments, timestamps, resolution notes, reopen reasons, and ticket history consistent.
+Another challenge was keeping ticket statuses, assignments, timestamps, resolution notes, reopen reasons, comments, and ticket history consistent.
+
+I also worked on enforcing permissions in the backend so that hiding a button in the frontend is not the only protection.
 
 During this project, I gained experience with:
 
@@ -194,10 +327,12 @@ During this project, I gained experience with:
 - Authentication
 - User sessions
 - Role-based permissions
-- APIs
+- REST APIs
 - Database persistence
 - Debugging
 - Testing
+- Git
+- GitHub
 
 ## Research and Resources
 
@@ -276,6 +411,8 @@ AI assistance was used for:
 - Assisting with HTML and CSS
 - Explaining API development and testing
 - Assisting with project documentation
+- Reviewing ticket workflow requirements
+- Testing API permissions and validation
 
 AI was not the only resource used during development. I also performed research using official documentation and online development resources to better understand the technologies and concepts used in the project.
 
