@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | INTELLICONZ Support Hub</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body class="login-page">
+
+    <!-- Top-left decoration -->
+    <div class="top-left-decoration">
+        <div class="stripe stripe-1"></div>
+        <div class="stripe stripe-2"></div>
+        <div class="stripe stripe-3"></div>
+    </div>
+
+
+    <!-- Right-side decoration -->
+    <div class="right-logo-decoration">
+        <div class="right-i-top"></div>
+        <div class="right-i-bottom"></div>
+        <div class="right-c"></div>
+    </div>
+
+
+    <!-- Bottom-left dotted waves -->
+    <div class="digital-wave wave-one"></div>
+    <div class="digital-wave wave-two"></div>
+
+
+    <!-- Main login content -->
+    <main class="login-wrapper">
+
+        <!-- Intelliconz Logo -->
+        <div class="logo-area">
+
+            <img
+                src="{{ url_for('static', filename='intelliconz-logo.png') }}"
+                alt="Intelliconz"
+                class="intelliconz-logo"
+            >
+
+        </div>
+
+
+        <!-- Login Card -->
+        <section class="login-card">
+
+            <h1>INTELLICONZ Support Hub</h1>
+
+            <p class="login-subtitle">
+                Login to continue
+            </p>
+
+
+            <form method="POST" action="/login">
+
+                <!-- Username -->
+                <label for="username">
+                    Username
+                </label>
+
+                <div class="input-group">
+
+                    <div class="input-icon">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"></path>
+                        </svg>
+
+                    </div>
+
+                    <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Password -->
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="input-group">
+
+                    <div class="input-icon">
+
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+
+                            <rect
+                                x="5"
+                                y="10"
+                                width="14"
+                                height="11"
+                                rx="2"
+                            ></rect>
+
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+
+                        </svg>
+
+                    </div>
+
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Login Button -->
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <!-- Welcome Divider -->
+            <div class="welcome-divider">
+
+                <div class="divider-line"></div>
+
+                <span>
+                    Welcome to Intelliconz
+                </span>
+
+                <div class="divider-line"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Bottom-right tagline -->
+    <div class="bottom-tagline">
+
+        <strong>//</strong>
+
+        <span>
+            Setting Passion In Motion
+        </span>
+
+    </div>
+
+</body>
+
+</html>

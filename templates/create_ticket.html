@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Ticket | INTELLICONZ Support Hub</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="create-ticket-page">
+
+    <div class="create-ticket-container">
+
+        <header class="create-ticket-header">
+
+            <a href="/" class="create-ticket-brand">
+
+                <img
+                    src="{{ url_for('static', filename='intelliconz-logo.png') }}"
+                    alt="Intelliconz"
+                    class="create-ticket-logo"
+                >
+
+                <div>
+                    <h1>INTELLICONZ Support Hub</h1>
+                    <p>Internal Support Ticket System</p>
+                </div>
+
+            </a>
+
+            <a href="/" class="back-dashboard-button">
+                ← Dashboard
+            </a>
+
+        </header>
+
+        <section class="create-ticket-card">
+
+            <div class="create-ticket-card-header">
+
+                <div class="create-ticket-icon">
+                    +
+                </div>
+
+                <div>
+                    <h2>Create Support Ticket</h2>
+
+                    <p>
+                        Submit a new request to the Intelliconz support team.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="logged-in-banner">
+
+                <span>Logged in as</span>
+
+                <strong>
+                    {{ session["username"] }}
+                </strong>
+
+                <span class="role-badge">
+                    {{ session["role"] }}
+                </span>
+
+            </div>
+
+            <form method="POST" action="/create-ticket" class="create-ticket-form">
+
+                <div class="form-section">
+
+                    <label for="title">
+                        Ticket Title
+                    </label>
+
+                    <p class="field-help">
+                        Give your support request a short title.
+                    </p>
+
+                    <input
+                        id="title"
+                        type="text"
+                        name="title"
+                        placeholder="Example: Cannot access company email"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-section">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <p class="field-help">
+                        Explain the problem and include any important details.
+                    </p>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Describe the issue you are experiencing..."
+                        required
+                    ></textarea>
+
+                </div>
+
+                <div class="ticket-form-row">
+
+                    <div class="form-section">
+
+                        <label for="category">
+                            Category
+                        </label>
+
+                        <select id="category" name="category">
+
+                            <option value="Technical Issue">
+                                Technical Issue
+                            </option>
+
+                            <option value="Access Request">
+                                Access Request
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-section">
+
+                        <label for="priority">
+                            Priority
+                        </label>
+
+                        <select id="priority" name="priority">
+
+                            <option value="Low">
+                                Low
+                            </option>
+
+                            <option value="Medium" selected>
+                                Medium
+                            </option>
+
+                            <option value="High">
+                                High
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="create-ticket-actions">
+
+                    <button type="submit" class="submit-ticket-button">
+                        Submit Ticket
+                    </button>
+
+                    <a href="/" class="cancel-ticket-button">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <footer class="create-ticket-footer">
+
+            <strong>//</strong>
+
+            <span>
+                Setting Passion In Motion
+            </span>
+
+        </footer>
+
+    </div>
+
+</body>
+
+</html>

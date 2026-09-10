@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tickets | INTELLICONZ Support Hub</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="tickets-page">
+
+    <div class="tickets-container">
+
+        <!-- HEADER -->
+
+        <header class="tickets-header">
+
+            <a href="/" class="tickets-brand">
+
+                <img
+                    src="{{ url_for('static', filename='intelliconz-logo.png') }}"
+                    alt="Intelliconz"
+                    class="tickets-logo"
+                >
+
+                <div>
+                    <h1>INTELLICONZ Support Hub</h1>
+                    <p>Internal Support Ticket System</p>
+                </div>
+
+            </a>
+
+            <div class="tickets-header-actions">
+
+                <a href="/" class="tickets-dashboard-button">
+                    ← Dashboard
+                </a>
+
+                <a href="/logout" class="tickets-logout-button">
+                    Logout
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE TITLE -->
+
+        <section class="tickets-title-section">
+
+            <div>
+
+                <h2>
+                    {% if session["role"] == "Employee" %}
+                        My Tickets
+                    {% else %}
+                        Support Tickets
+                    {% endif %}
+                </h2>
+
+                <p>
+                    {% if session["role"] == "Employee" %}
+                        Track and manage your support requests.
+                    {% else %}
+                        Review and manage Intelliconz support requests.
+                    {% endif %}
+                </p>
+
+            </div>
+
+            <div class="tickets-user-info">
+
+                <span>
+                    {{ session["username"] }}
+                </span>
+
+                <strong>
+                    {{ session["role"] }}
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUMMARY -->
+
+        <section class="ticket-summary-grid">
+
+            <div class="ticket-summary-card">
+
+                <span class="summary-label">
+                    Total
+                </span>
+
+                <strong>
+                    {{ summary["total"] or 0 }}
+                </strong>
+
+            </div>
+
+
+            <div class="ticket-summary-card">
+
+                <span class="summary-label">
+                    Open
+                </span>
+
+                <strong>
+                    {{ summary["open_count"] or 0 }}
+                </strong>
+
+            </div>
+
+
+            <div class="ticket-summary-card">
+
+                <span class="summary-label">
+                    In Progress
+                </span>
+
+                <strong>
+                    {{ summary["progress_count"] or 0 }}
+                </strong>
+
+            </div>
+
+
+            <div class="ticket-summary-card">
+
+                <span class="summary-label">
+                    Resolved
+                </span>
+
+                <strong>
+                    {{ summary["resolved_count"] or 0 }}
+                </strong>
+
+            </div>
+
+
+            <div class="ticket-summary-card">
+
+                <span class="summary-label">
+                    Closed
+                </span>
+
+                <strong>
+                    {{ summary["closed_count"] or 0 }}
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEARCH / FILTER -->
+
+        <section class="ticket-filter-card">
+
+            <div class="ticket-section-heading">
+
+                <div>
+
+                    <h2>
+                        Search & Filter
+                    </h2>
+
+                    <p>
+                        Find tickets by title, description, status,
+                        category, or priority.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                method="GET"
+                action="/tickets"
+                class="ticket-filter-form"
+            >
+
+                <div class="ticket-search-field">
+
+                    <label for="search">
+                        Search
+                    </label>
+
+                    <input
+                        id="search"
+                        type="text"
+                        name="search"
+                        placeholder="Search title or description..."
+                        value="{{ search }}"
+                    >
+
+                </div>
+
+
+                <div class="ticket-filter-field">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                    >
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        <option
+                            value="Open"
+                            {% if status_filter == "Open" %}selected{% endif %}
+                        >
+                            Open
+                        </option>
+
+                        <option
+                            value="In Progress"
+                            {% if status_filter == "In Progress" %}selected{% endif %}
+                        >
+                            In Progress
+                        </option>
+
+                        <option
+                            value="Resolved"
+                            {% if status_filter == "Resolved" %}selected{% endif %}
+                        >
+                            Resolved
+                        </option>
+
+                        <option
+                            value="Closed"
+                            {% if status_filter == "Closed" %}selected{% endif %}
+                        >
+                            Closed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ticket-filter-field">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <select
+                        id="category"
+                        name="category"
+                    >
+
+                        <option value="">
+                            All Categories
+                        </option>
+
+                        <option
+                            value="Technical Issue"
+                            {% if category_filter == "Technical Issue" %}selected{% endif %}
+                        >
+                            Technical Issue
+                        </option>
+
+                        <option
+                            value="Access Request"
+                            {% if category_filter == "Access Request" %}selected{% endif %}
+                        >
+                            Access Request
+                        </option>
+
+                        <option
+                            value="Other"
+                            {% if category_filter == "Other" %}selected{% endif %}
+                        >
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ticket-filter-field">
+
+                    <label for="priority">
+                        Priority
+                    </label>
+
+                    <select
+                        id="priority"
+                        name="priority"
+                    >
+
+                        <option value="">
+                            All Priorities
+                        </option>
+
+                        <option
+                            value="Low"
+                            {% if priority_filter == "Low" %}selected{% endif %}
+                        >
+                            Low
+                        </option>
+
+                        <option
+                            value="Medium"
+                            {% if priority_filter == "Medium" %}selected{% endif %}
+                        >
+                            Medium
+                        </option>
+
+                        <option
+                            value="High"
+                            {% if priority_filter == "High" %}selected{% endif %}
+                        >
+                            High
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="ticket-filter-buttons">
+
+                    <button
+                        type="submit"
+                        class="apply-filter-button"
+                    >
+                        Apply
+                    </button>
+
+                    <a
+                        href="/tickets"
+                        class="clear-filter-button"
+                    >
+                        Clear
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- TICKET LIST -->
+
+        <section class="tickets-list-section">
+
+            <div class="ticket-section-heading">
+
+                <div>
+
+                    <h2>
+                        Ticket List
+                    </h2>
+
+                    <p>
+                        Support request details and activity.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if tickets %}
+
+                <div class="tickets-list">
+
+                    {% for ticket in tickets %}
+
+                        <article class="full-ticket-card">
+
+
+                            <!-- TICKET TOP -->
+
+                            <div class="full-ticket-header">
+
+                                <div class="ticket-heading-left">
+
+                                    <span class="full-ticket-id">
+                                        #{{ ticket["id"] }}
+                                    </span>
+
+                                    <div>
+
+                                        <h3>
+                                            {{ ticket["title"] }}
+                                        </h3>
+
+                                        <p>
+                                            {{ ticket["category"] }}
+                                            •
+                                            {{ ticket["priority"] }} Priority
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="
+                                    ticket-status
+                                    {% if ticket['status'] == 'Open' %}
+                                        status-open
+                                    {% elif ticket['status'] == 'In Progress' %}
+                                        status-assigned
+                                    {% elif ticket['status'] == 'Resolved' %}
+                                        status-resolved
+                                    {% elif ticket['status'] == 'Closed' %}
+                                        status-closed
+                                    {% else %}
+                                        status-default
+                                    {% endif %}
+                                ">
+
+                                    {{ ticket["status"] }}
+
+                                </span>
+
+                            </div>
+
+
+                            <!-- DESCRIPTION -->
+
+                            <div class="ticket-description">
+
+                                <span class="ticket-detail-label">
+                                    Description
+                                </span>
+
+                                <p>
+                                    {{ ticket["description"] }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- DETAILS -->
+
+                            <div class="ticket-details-grid">
+
+                                <div class="ticket-detail-item">
+
+                                    <span>
+                                        Created By
+                                    </span>
+
+                                    <strong>
+
+                                        {% if ticket["creator_username"] %}
+                                            {{ ticket["creator_username"] }}
+                                        {% else %}
+                                            Unknown
+                                        {% endif %}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="ticket-detail-item">
+
+                                    <span>
+                                        Assigned Support
+                                    </span>
+
+                                    <strong>
+
+                                        {% if ticket["assigned_username"] %}
+                                            {{ ticket["assigned_username"] }}
+                                        {% else %}
+                                            Unassigned
+                                        {% endif %}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="ticket-detail-item">
+
+                                    <span>
+                                        Created
+                                    </span>
+
+                                    <strong>
+                                        {{ ticket["created_at"] }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="ticket-detail-item">
+
+                                    <span>
+                                        Updated
+                                    </span>
+
+                                    <strong>
+
+                                        {% if ticket["updated_at"] %}
+                                            {{ ticket["updated_at"] }}
+                                        {% else %}
+                                            Not available
+                                        {% endif %}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- RESOLUTION NOTE -->
+
+                            {% if ticket["resolution_note"] %}
+
+                                <div class="ticket-note resolution-ticket-note">
+
+                                    <strong>
+                                        Resolution Note
+                                    </strong>
+
+                                    <p>
+                                        {{ ticket["resolution_note"] }}
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- REOPEN REASON -->
+
+                            {% if ticket["reopen_reason"] %}
+
+                                <div class="ticket-note reopen-ticket-note">
+
+                                    <strong>
+                                        Reopen Reason
+                                    </strong>
+
+                                    <p>
+                                        {{ ticket["reopen_reason"] }}
+                                    </p>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- SUPPORT ASSIGN -->
+
+                            {% if session["role"] == "Support"
+                                  and ticket["assigned_to"] == None
+                                  and ticket["status"] != "Closed" %}
+
+                                <div class="ticket-action-area">
+
+                                    <form
+                                        method="POST"
+                                        action="/assign/{{ ticket['id'] }}"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="assign-ticket-button"
+                                        >
+                                            Assign to Me
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- SUPPORT RESOLVE -->
+
+                            {% if session["role"] == "Support"
+                                  and ticket["assigned_to"] == session["user_id"]
+                                  and ticket["status"] == "In Progress" %}
+
+                                <div class="ticket-action-area">
+
+                                    <form
+                                        method="POST"
+                                        action="/resolve/{{ ticket['id'] }}"
+                                        class="ticket-action-form"
+                                    >
+
+                                        <label>
+                                            Resolution Note
+                                        </label>
+
+                                        <textarea
+                                            name="resolution_note"
+                                            placeholder="Describe how the issue was resolved..."
+                                            required
+                                        ></textarea>
+
+                                        <button
+                                            type="submit"
+                                            class="resolve-ticket-button"
+                                        >
+                                            Resolve Ticket
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- SUPPORT CLOSE -->
+
+                            {% if session["role"] == "Support"
+                                  and ticket["assigned_to"] == session["user_id"]
+                                  and ticket["status"] == "Resolved" %}
+
+                                <div class="ticket-action-area">
+
+                                    <form
+                                        method="POST"
+                                        action="/close/{{ ticket['id'] }}"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="close-ticket-button"
+                                        >
+                                            Close Ticket
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- EMPLOYEE REOPEN -->
+
+                            {% if session["role"] == "Employee"
+                                  and ticket["creator_id"] == session["user_id"]
+                                  and ticket["status"] == "Resolved" %}
+
+                                <div class="ticket-action-area">
+
+                                    <form
+                                        method="POST"
+                                        action="/reopen/{{ ticket['id'] }}"
+                                        class="ticket-action-form"
+                                    >
+
+                                        <label>
+                                            Reopen Reason
+                                        </label>
+
+                                        <textarea
+                                            name="reopen_reason"
+                                            placeholder="Explain why the ticket needs to be reopened..."
+                                            required
+                                        ></textarea>
+
+                                        <button
+                                            type="submit"
+                                            class="reopen-ticket-button"
+                                        >
+                                            Reopen Ticket
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- HISTORY -->
+
+                            <div class="ticket-history-section">
+
+                                <h4>
+                                    Ticket History
+                                </h4>
+
+
+                                {% if ticket["id"] in history_by_ticket %}
+
+                                    <div class="ticket-timeline">
+
+                                        {% for history in history_by_ticket[ticket["id"]] %}
+
+                                            <div class="timeline-item">
+
+                                                <div class="timeline-marker"></div>
+
+                                                <div class="timeline-content">
+
+                                                    <div class="timeline-heading">
+
+                                                        <strong>
+                                                            {{ history["action"] }}
+                                                        </strong>
+
+                                                        <span>
+
+                                                            {% if history["actor_username"] %}
+                                                                {{ history["actor_username"] }}
+                                                            {% else %}
+                                                                System
+                                                            {% endif %}
+
+                                                            •
+
+                                                            {{ history["created_at"] }}
+
+                                                        </span>
+
+                                                    </div>
+
+
+                                                    {% if history["details"] %}
+
+                                                        <p>
+                                                            {{ history["details"] }}
+                                                        </p>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% else %}
+
+                                    <p class="no-history">
+                                        No history recorded yet.
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="no-tickets-card">
+
+                    <h3>
+                        No tickets found
+                    </h3>
+
+                    <p>
+                        No tickets match the current search or filters.
+                    </p>
+
+                    <a href="/tickets">
+                        Clear Filters
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="tickets-footer">
+
+            <div>
+
+                <strong>
+                    //
+                </strong>
+
+                <span>
+                    Setting Passion In Motion
+                </span>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+</body>
+
+</html>

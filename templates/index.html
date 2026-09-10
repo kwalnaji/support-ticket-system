@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | INTELLICONZ Support Hub</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+
+    <div class="dashboard-container">
+
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
+
+        <header class="dashboard-header">
+
+            <img
+                src="{{ url_for('static', filename='intelliconz-logo.png') }}"
+                alt="Intelliconz"
+                class="dashboard-logo"
+            >
+
+            <div>
+                <h1>INTELLICONZ Support Hub</h1>
+
+                <p class="dashboard-subtitle">
+                    Internal Support Ticket System
+                </p>
+            </div>
+
+        </header>
+
+
+        {% if session["username"] %}
+
+        <!-- =====================================================
+             USER INFORMATION
+             ===================================================== -->
+
+        <div class="user-card">
+
+            <div>
+                <p>
+                    Welcome,
+                    <strong>{{ session["username"] }}</strong>
+                </p>
+            </div>
+
+            <span class="role-badge">
+                {{ session["role"] }}
+            </span>
+
+        </div>
+
+
+        <!-- =====================================================
+             EMPLOYEE DASHBOARD
+             ===================================================== -->
+
+        {% if session["role"] == "Employee" %}
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Employee Dashboard</h2>
+
+                    <p>
+                        Overview of your support requests
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- KPI CARDS -->
+
+            <div class="kpi-grid">
+
+                <!-- TOTAL TICKETS -->
+
+                <a href="/tickets" class="kpi-card">
+
+                    <div class="kpi-icon">
+                        🎫
+                    </div>
+
+                    <div class="kpi-info">
+
+                        <span class="kpi-label">
+                            My Tickets
+                        </span>
+
+                        <strong class="kpi-number">
+                            {{ total_tickets }}
+                        </strong>
+
+                        <span class="kpi-description">
+                            Total tickets created
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- OPEN TICKETS -->
+
+                <a href="/tickets?status=Open" class="kpi-card">
+
+                    <div class="kpi-icon">
+                        ◷
+                    </div>
+
+                    <div class="kpi-info">
+
+                        <span class="kpi-label">
+                            Open Tickets
+                        </span>
+
+                        <strong class="kpi-number">
+                            {{ open_tickets }}
+                        </strong>
+
+                        <span class="kpi-description">
+                            Currently open
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- CLOSED TICKETS -->
+
+                <a href="/tickets?status=Closed" class="kpi-card">
+
+                    <div class="kpi-icon">
+                        ✓
+                    </div>
+
+                    <div class="kpi-info">
+
+                        <span class="kpi-label">
+                            Closed Tickets
+                        </span>
+
+                        <strong class="kpi-number">
+                            {{ closed_tickets }}
+                        </strong>
+
+                        <span class="kpi-description">
+                            Completed requests
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             EMPLOYEE ACTIONS
+             ===================================================== -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Quick Actions</h2>
+
+                    <p>
+                        Create a new request or manage your existing tickets
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-actions">
+
+                <!-- CREATE TICKET -->
+
+                <a href="/create-ticket" class="dashboard-action-card">
+
+                    <div class="action-icon">
+                        +
+                    </div>
+
+                    <h2>
+                        Create Ticket
+                    </h2>
+
+                    <p>
+                        Submit a new support request to the Intelliconz support team.
+                    </p>
+
+                    <span class="action-button">
+                        Create Ticket
+                    </span>
+
+                </a>
+
+
+                <!-- VIEW TICKETS -->
+
+                <a href="/tickets" class="dashboard-action-card">
+
+                    <div class="action-icon">
+                        ☰
+                    </div>
+
+                    <h2>
+                        My Tickets
+                    </h2>
+
+                    <p>
+                        View all of your submitted tickets and track their current status.
+                    </p>
+
+                    <span class="action-button">
+                        View My Tickets
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             RECENT EMPLOYEE TICKETS
+             ===================================================== -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Recent Tickets</h2>
+
+                    <p>
+                        Your latest support requests
+                    </p>
+                </div>
+
+                <a href="/tickets" class="view-all-link">
+                    View All
+                </a>
+
+            </div>
+
+
+            <div class="recent-ticket-container">
+
+                {% if recent_tickets %}
+
+                    {% for ticket in recent_tickets %}
+
+                    <div class="recent-ticket-row">
+
+                        <div class="recent-ticket-main">
+
+                            <span class="recent-ticket-id">
+                                #{{ ticket["id"] }}
+                            </span>
+
+                            <div>
+
+                                <h3>
+                                    {{ ticket["title"] }}
+                                </h3>
+
+                                <p>
+                                    {{ ticket["category"] }}
+                                    •
+                                    {{ ticket["priority"] }} Priority
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="recent-ticket-status">
+
+                            <span class="ticket-status
+                                {% if ticket['status'] == 'Open' %}
+                                    status-open
+                                {% elif ticket['status'] == 'Assigned' %}
+                                    status-assigned
+                                {% elif ticket['status'] == 'Resolved' %}
+                                    status-resolved
+                                {% elif ticket['status'] == 'Closed' %}
+                                    status-closed
+                                {% else %}
+                                    status-default
+                                {% endif %}
+                            ">
+
+                                {{ ticket["status"] }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+
+                {% else %}
+
+                    <div class="empty-dashboard-state">
+
+                        <div class="empty-icon">
+                            🎫
+                        </div>
+
+                        <h3>
+                            No tickets yet
+                        </h3>
+
+                        <p>
+                            You haven't created any support tickets.
+                        </p>
+
+                        <a
+                            href="/create-ticket"
+                            class="empty-create-button"
+                        >
+                            Create Your First Ticket
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SUPPORT DASHBOARD
+             ===================================================== -->
+
+        {% elif session["role"] == "Support" %}
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Support Dashboard
+                    </h2>
+
+                    <p>
+                        Overview of the Intelliconz support queue
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- SUPPORT KPI CARDS -->
+
+            <div class="kpi-grid support-kpi-grid">
+
+
+                <!-- ALL TICKETS -->
+
+                <a href="/tickets" class="kpi-card">
+
+                    <div class="kpi-icon">
+                        🎫
+                    </div>
+
+                    <div class="kpi-info">
+
+                        <span class="kpi-label">
+                            All Tickets
+                        </span>
+
+                        <strong class="kpi-number">
+                            {{ total_tickets }}
+                        </strong>
+
+                        <span class="kpi-description">
+                            Total support requests
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- OPEN -->
+
+                <a href="/tickets?status=Open" class="kpi-card">
+
+                    <div class="kpi-icon">
+                        ◷
+                    </div>
+
+                    <div class="kpi-info">
+
+                        <span class="kpi-label">
+                            Open Tickets
+                        </span>
+
+                        <strong class="kpi-number">
+                            {{ open_tickets }}
+                        </strong>
+
+                        <span class="kpi-description">
+                            Waiting for support
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- ASSIGNED TO ME -->
+
+                <a href="/tickets" class="kpi-card">
+
+                    <div class="kpi-icon">
+                        👤
+                    </div>
+
+                    <div class="kpi-info">
+
+                        <span class="kpi-label">
+                            Assigned to Me
+                        </span>
+
+                        <strong class="kpi-number">
+                            {{ assigned_tickets }}
+                        </strong>
+
+                        <span class="kpi-description">
+                            Your active workload
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <!-- CLOSED -->
+
+                <a href="/tickets?status=Closed" class="kpi-card">
+
+                    <div class="kpi-icon">
+                        ✓
+                    </div>
+
+                    <div class="kpi-info">
+
+                        <span class="kpi-label">
+                            Closed Tickets
+                        </span>
+
+                        <strong class="kpi-number">
+                            {{ closed_tickets }}
+                        </strong>
+
+                        <span class="kpi-description">
+                            Completed tickets
+                        </span>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUPPORT ACTION -->
+
+        <section class="dashboard-section">
+
+            <div class="dashboard-actions support-actions">
+
+                <a
+                    href="/tickets"
+                    class="dashboard-action-card"
+                >
+
+                    <div class="action-icon">
+                        ☰
+                    </div>
+
+                    <h2>
+                        Manage Tickets
+                    </h2>
+
+                    <p>
+                        View, assign, resolve, close, and manage support requests.
+                    </p>
+
+                    <span class="action-button">
+                        Open Support Queue
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUPPORT RECENT TICKETS -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Recent Tickets
+                    </h2>
+
+                    <p>
+                        Latest requests submitted to support
+                    </p>
+
+                </div>
+
+                <a href="/tickets" class="view-all-link">
+                    View All
+                </a>
+
+            </div>
+
+
+            <div class="recent-ticket-container">
+
+                {% if recent_tickets %}
+
+                    {% for ticket in recent_tickets %}
+
+                    <div class="recent-ticket-row">
+
+                        <div class="recent-ticket-main">
+
+                            <span class="recent-ticket-id">
+                                #{{ ticket["id"] }}
+                            </span>
+
+                            <div>
+
+                                <h3>
+                                    {{ ticket["title"] }}
+                                </h3>
+
+                                <p>
+                                    {{ ticket["category"] }}
+                                    •
+                                    {{ ticket["priority"] }} Priority
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="recent-ticket-status">
+
+                            <span class="ticket-status
+                                {% if ticket['status'] == 'Open' %}
+                                    status-open
+                                {% elif ticket['status'] == 'Assigned' %}
+                                    status-assigned
+                                {% elif ticket['status'] == 'Resolved' %}
+                                    status-resolved
+                                {% elif ticket['status'] == 'Closed' %}
+                                    status-closed
+                                {% else %}
+                                    status-default
+                                {% endif %}
+                            ">
+
+                                {{ ticket["status"] }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="empty-dashboard-state">
+
+                        <h3>
+                            No tickets found
+                        </h3>
+
+                        <p>
+                            There are currently no support tickets.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             FOOTER
+             ===================================================== -->
+
+        <footer class="dashboard-footer">
+
+            <div class="dashboard-footer-brand">
+
+                <strong>
+                    //
+                </strong>
+
+                <span>
+                    Setting Passion In Motion
+                </span>
+
+            </div>
+
+            <a
+                href="/logout"
+                class="logout-button"
+            >
+                Logout
+            </a>
+
+        </footer>
+
+
+        {% else %}
+
+        <!-- =====================================================
+             NOT LOGGED IN
+             ===================================================== -->
+
+        <div class="not-logged-card">
+
+            <h2>
+                You are not logged in.
+            </h2>
+
+            <p>
+                Please log in to access the Intelliconz Support Hub.
+            </p>
+
+            <a
+                href="/login"
+                class="main-login-button"
+            >
+                Login
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>
